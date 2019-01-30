@@ -168,6 +168,44 @@ We released RPN, Faster R-CNN and Mask R-CNN models in the first version. More m
 - Inference time is reported for batch size = 1 and batch size = 8.
 - The speed difference between VOC and COCO is caused by model parameters and nms.
 
+### Group Normalization (GN)
+
+| Backbone      | model      | Lr schd | Mem (GB) | Train time (s/iter) | Inf time (fps) | box AP | mask AP | Download |
+|:-------------:|:----------:|:-------:|:--------:|:-------------------:|:--------------:|:------:|:-------:|:--------:|
+| R-50-FPN (d)  | Mask R-CNN | 2x      | 7.2      | 0.806               | 5.4            | 39.9   | 36.1    | [model](https://s3.ap-northeast-2.amazonaws.com/open-mmlab/mmdetection/models/mask_rcnn_r50_fpn_gn_2x_20180113-86832cf2.pth) |
+| R-50-FPN (d)  | Mask R-CNN | 3x      | 7.2      | 0.806               | 5.4            | 40.2   | 36.5    | [model](https://s3.ap-northeast-2.amazonaws.com/open-mmlab/mmdetection/models/mask_rcnn_r50_fpn_gn_3x_20180113-8e82f48d.pth) |
+| R-101-FPN (d) | Mask R-CNN | 2x      | 9.9      | 0.970               | 4.8            | 41.6   | 37.1    | [model](https://s3.ap-northeast-2.amazonaws.com/open-mmlab/mmdetection/models/mask_rcnn_r101_fpn_gn_2x_20180113-9598649c.pth) |
+| R-101-FPN (d) | Mask R-CNN | 3x      | 9.9      | 0.970               | 4.8            | 41.7   | 37.3    | [model](https://s3.ap-northeast-2.amazonaws.com/open-mmlab/mmdetection/models/mask_rcnn_r101_fpn_gn_3x_20180113-a14ffb96.pth) |
+| R-50-FPN (c)  | Mask R-CNN | 2x      | 7.2      | 0.806               | 5.4            | 39.7   | 35.9    | [model](https://s3.ap-northeast-2.amazonaws.com/open-mmlab/mmdetection/models/mask_rcnn_r50_fpn_gn_contrib_2x_20180113-ec93305c.pth) |
+| R-50-FPN (c)  | Mask R-CNN | 3x      | 7.2      | 0.806               | 5.4            | 40.1   | 36.2    | [model](https://s3.ap-northeast-2.amazonaws.com/open-mmlab/mmdetection/models/mask_rcnn_r50_fpn_gn_contrib_3x_20180113-9d230cab.pth) |
+
+**Notes:**
+- (d) means pretrained model converted from Detectron, and (c) means the contributed model pretrained by [@thangvubk](https://github.com/thangvubk).
+- The `3x` schedule is epoch [28, 34, 36].
+- The memory is measured with `torch.cuda.max_memory_allocated()` instead of `torch.cuda.max_memory_cached()`. We will update the memory usage of other models in the future.
+
+### Deformable Convolution v2
+
+| Backbone  | Model        | Style   | Conv          | Pool   | Lr schd | Mem (GB) | Train time (s/iter) | Inf time (fps) | box AP | mask AP | Download |
+|:---------:|:------------:|:-------:|:-------------:|:------:|:-------:|:--------:|:-------------------:|:--------------:|:------:|:-------:|:--------:|
+| R-50-FPN  | Faster       | pytorch | dconv(c3-c5)  | -      | 1x      | 3.9      | 0.594               | 10.2           | 40.0   | -       | [model](https://s3.ap-northeast-2.amazonaws.com/open-mmlab/mmdetection/models/dcn/faster_rcnn_dconv_c3-c5_r50_fpn_1x_20190125-e41688c9.pth) |
+| R-50-FPN  | Faster       | pytorch | mdconv(c3-c5) | -      | 1x      | 3.7      | 0.598               | 10.0           | 40.3   | -       | [model](https://s3.ap-northeast-2.amazonaws.com/open-mmlab/mmdetection/models/dcn/faster_rcnn_mdconv_c3-c5_r50_fpn_1x_20190125-1b768045.pth) |
+| R-50-FPN  | Faster       | pytorch | -             | dpool  | 1x      | 4.6      | 0.714               | 8.7            | 37.9   | -       | [model](https://s3.ap-northeast-2.amazonaws.com/open-mmlab/mmdetection/models/dcn/faster_rcnn_dpool_r50_fpn_1x_20190125-f4fc1d70.pth) |
+| R-50-FPN  | Faster       | pytorch | -             | mdpool | 1x      | 5.2      | 0.769               | 8.2            | 38.1   | -       | [model](https://s3.ap-northeast-2.amazonaws.com/open-mmlab/mmdetection/models/dcn/faster_rcnn_mdpool_r50_fpn_1x_20190125-473d0f3d.pth) |
+| R-101-FPN | Faster       | pytorch | dconv(c3-c5)  | -      | 1x      | 5.8      | 0.811               | 8.0            | 42.1   | -       | [model](https://s3.ap-northeast-2.amazonaws.com/open-mmlab/mmdetection/models/dcn/faster_rcnn_dconv_c3-c5_r101_fpn_1x_20190125-a7e31b65.pth) |
+| R-50-FPN  | Mask         | pytorch | dconv(c3-c5)  | -      | 1x      | 4.5      | 0.712               | 7.7            | 41.1   | 37.2    | [model](https://s3.ap-northeast-2.amazonaws.com/open-mmlab/mmdetection/models/dcn/mask_rcnn_dconv_c3-c5_r50_fpn_1x_20190125-4f94ff79.pth) |
+| R-50-FPN  | Mask         | pytorch | mdconv(c3-c5) | -      | 1x      | 4.5      | 0.712               | 7.7            | 41.4   | 37.4    | [model](https://s3.ap-northeast-2.amazonaws.com/open-mmlab/mmdetection/models/dcn/mask_rcnn_mdconv_c3-c5_r50_fpn_1x_20190125-c5601dc3.pth) |
+| R-101-FPN | Mask         | pytorch | dconv(c3-c5)  | -      | 1x      | 6.4      | 0.939               | 6.5            | 43.2   | 38.7    | [model](https://s3.ap-northeast-2.amazonaws.com/open-mmlab/mmdetection/models/dcn/mask_rcnn_dconv_c3-c5_r101_fpn_1x_20190125-decb6db5.pth) |
+| R-50-FPN  | Cascade      | pytorch | dconv(c3-c5)  | -      | 1x      | 4.4      | 0.660               | 7.6            | 44.1   | -       | [model](https://s3.ap-northeast-2.amazonaws.com/open-mmlab/mmdetection/models/dcn/cascade_rcnn_dconv_c3-c5_r50_fpn_1x_20190125-dfa53166.pth) |
+| R-101-FPN | Cascade      | pytorch | dconv(c3-c5)  | -      | 1x      | 6.3      | 0.881               | 6.8            | 45.1   | -       | [model](https://s3.ap-northeast-2.amazonaws.com/open-mmlab/mmdetection/models/dcn/cascade_rcnn_dconv_c3-c5_r101_fpn_1x_20190125-aaa877cc.pth) |
+| R-50-FPN  | Cascade Mask | pytorch | dconv(c3-c5)  | -      | 1x      | 6.6      | 0.942               | 5.7            | 44.5   | 38.3    | [model](https://s3.ap-northeast-2.amazonaws.com/open-mmlab/mmdetection/models/dcn/cascade_mask_rcnn_dconv_c3-c5_r50_fpn_1x_20190125-09d8a443.pth) |
+| R-101-FPN | Cascade Mask | pytorch | dconv(c3-c5)  | -      | 1x      | 8.5      | 1.156               | 5.1            | 45.8   | 39.5    | [model](https://s3.ap-northeast-2.amazonaws.com/open-mmlab/mmdetection/models/dcn/cascade_mask_rcnn_dconv_c3-c5_r101_fpn_1x_20190125-0d62c190.pth) |
+
+**Notes:**
+
+- `dconv` and `mdconv` denote (modulated) deformable convolution, `c3-c5` means adding dconv in resnet stage 3 to 5. `dpool` and `mdpool` denote (modulated) deformable roi pooling.
+- The memory is measured with `torch.cuda.max_memory_allocated()`. The batch size is 16 (2 images per GPU).
+- The dcn ops are modified from https://github.com/chengdazhi/Deformable-Convolution-V2-PyTorch, which should be more memory efficient and slightly faster.
 
 ## Comparison with Detectron
 
