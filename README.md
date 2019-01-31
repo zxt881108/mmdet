@@ -82,6 +82,7 @@ Other features
 - [x] Group Normalization
 - [x] OHEM
 - [x] Soft-NMS
+- [x] FP16
 
 
 ## Installation
